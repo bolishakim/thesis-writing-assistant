@@ -1,0 +1,24 @@
+{
+  "name": "thesis-writing-assistant",
+  "version": "1.0.0",
+  "description": "Claude skill that transforms AI-assisted thesis drafts into authentic, publication-quality academic writing for CS/IS Master's theses.",
+  "bin": {
+    "thesis-writing-assistant": "./install.mjs"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "skill",
+    "thesis",
+    "academic-writing",
+    "humanize",
+    "NL2SQL",
+    "LaTeX"
+  ],
+  "author": "bolishakim",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bolishakim/thesis-writing-assistant.git"
+  }
+}
