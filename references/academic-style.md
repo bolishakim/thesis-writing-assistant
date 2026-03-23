@@ -189,6 +189,10 @@ Simple synonym swaps and paraphrasing are detectable by GPTZero's Paraphraser Sh
 - Change the rhetorical approach (e.g., evidence-first instead of claim-first)
 - Introduce researcher-specific framing and perspective
 
+### Fundamental Limitation: Human Editing Is Required
+
+AI-to-AI rewriting improves prose quality but **cannot eliminate statistical detection signatures**. GPTZero's deep classifier and perplexity scorer detect token-level probability patterns inherent to LLM text generation — these exist regardless of vocabulary, structure, or style quality. The rewrite produced by this skill is a high-quality intermediate step. The author must complete a final human editing pass (Phase 5) to break the statistical fingerprint. See `references/audit-workflow.md` for the full Phase 5 guidance.
+
 ---
 
 ## Natural Imperfection Targets

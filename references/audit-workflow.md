@@ -161,6 +161,44 @@ Flag any domain term that may have been altered with: `%% [REVIEW: domain term c
 
 ---
 
+## Phase 5: Human Editing Pass
+
+**This phase is mandatory for AI-detection resistance.** After AI rewriting, the text still carries LLM statistical fingerprints (token-level probability distributions) that deep learning classifiers detect. Only human editing disrupts these signatures.
+
+### Why AI-to-AI Rewriting Is Not Enough
+
+GPTZero and similar detectors use:
+- **Perplexity scoring**: measures how predictable each word is under a language model. LLM output is inherently high-probability (low perplexity) because LLMs select likely tokens by design.
+- **Burstiness analysis**: measures variance of perplexity across sentences. LLMs produce uniformly predictable text even when varying sentence length or vocabulary.
+- **Deep neural classifiers**: trained on millions of AI vs human text samples, detecting distributional patterns beyond any surface-level checklist.
+
+These signals exist at the **token generation level** — they are properties of how the text was produced, not what it says or how it's structured. Rewriting AI text with another AI changes the surface but preserves the statistical fingerprint.
+
+### What Human Edits Are Most Effective
+
+Ranked by impact on breaking AI statistical signatures:
+
+1. **Full sentence rewrites in your own words** (highest impact) — rewriting even 3-5 sentences from scratch introduces genuine human token distributions that disrupt the AI fingerprint across surrounding text
+2. **Personal research observations** — sentences about your specific data, participants, or experiences are impossible for detectors to predict and anchor the text as human
+3. **Paragraph opening rephrasing** — GPTZero scores sentences independently; changing how paragraphs begin disrupts the classifier at transition points
+4. **Domain-specific examples from your work** — replacing generic illustrations with real ones from your experiment
+5. **Structural micro-edits** — merging/splitting sentences, adding parenthetical asides, adjusting connectives based on instinct
+6. **Fixing anything that doesn't sound like you** — your intuition about what feels unnatural is itself a signal of human authorship
+
+### Detection Resistance Estimate
+
+| Human Editing Level | Estimated Detection Resistance |
+|---------------------|-------------------------------|
+| No human edits (AI output only) | ~0% — detectors will flag with high confidence |
+| Light edits (typo fixes, 1-2 word swaps) | ~10% — Paraphraser Shield catches this |
+| Moderate edits (5-8 sentences rewritten, 1-2 personal observations added) | ~60-70% — significant signature disruption |
+| Heavy edits (every paragraph touched, multiple personal observations, examples from your data) | ~85-95% — approaches genuine human writing |
+| Human-drafted, AI-polished, human-finalized | ~95%+ — best workflow for authentic output |
+
+The recommended workflow: **write a rough draft yourself → use this skill to polish → do a final editing pass applying the Human Editing Guide.**
+
+---
+
 ## Output Format
 
 After completing the audit, produce this report:
