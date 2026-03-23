@@ -2,6 +2,22 @@
 
 Rules for producing authentic academic prose in a CS/IS Master's thesis.
 
+**Important:** Also read `references/professor-style-guide.md` for supervisor-specific rules that take precedence when they conflict with generic conventions below.
+
+---
+
+## Simplicity First (Professor's Rule)
+
+Write simply. The content is typically complex enough — do not add complexity through the language. Prefer short, clear sentences. Check for overly long sentences.
+
+## Consistent Wording (Professor's Rule)
+
+In contrast to literary writing, academic writing should reuse the same words for the same concepts and artefacts. Do not rotate synonyms for technical terms. If you call it "the system" in one paragraph, do not switch to "the framework" or "the platform" in the next — unless they genuinely mean different things. Consistency is more important than stylistic variety when it comes to terminology.
+
+## Narrative Thread (Professor's Rule)
+
+Build a line of argumentation throughout each section and chapter. The reader should feel the text is going somewhere, not just listing facts. Each section should have a logical flow that advances the overall argument.
+
 ---
 
 ## Voice and Tone
@@ -87,11 +103,14 @@ Avoid starting consecutive sentences the same way. Vary among:
 
 ## Paragraph Construction
 
+### Core Principle (Professor's Rule)
+Each paragraph should make a single statement or advance a single point. A new thought = a new paragraph. This is the fundamental unit of academic argumentation.
+
 ### Structure
 - Not every paragraph needs a topic sentence — some can begin with evidence, a contrast, or a continuation
-- **Typical length:** 4-8 sentences, but let the content dictate
-- Short paragraphs (2-3 sentences) are fine for transitions or single strong points
-- Long paragraphs (8-10 sentences) are acceptable for complex arguments but should be internally coherent
+- **Typical length:** 10-20 lines (~5-10 sentences), per professor's guidance
+- Short paragraphs (2-3 sentences) are acceptable for transitions but should not be the norm
+- Long paragraphs are fine for complex arguments but must remain internally coherent and focused on one point
 
 ### Varied Openings
 Do not start consecutive paragraphs with:

@@ -149,4 +149,5 @@ The `references/` directory contains detailed rules. Read them as needed — don
 | `references/section-guidelines.md` | Per-section writing behavior | Phase 2 when section is identified |
 | `references/audit-workflow.md` | Scoring checklists and pass logic | Phase 3 |
 | `references/latex-conventions.md` | LaTeX preservation and formatting rules | Phase 2 when input contains LaTeX |
+| `references/professor-style-guide.md` | Supervisor's style rules (TU Graz ISDS) — overrides generic conventions | Always load — these rules take priority |
 | `scripts/academic_scorer.py` | Deterministic 0-100 authenticity scorer | Before/after rewriting for measurable comparison |

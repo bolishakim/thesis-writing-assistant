@@ -22,6 +22,7 @@ const SKILL_FILES = [
   "references/section-guidelines.md",
   "references/audit-workflow.md",
   "references/latex-conventions.md",
+  "references/professor-style-guide.md",
 ];
 
 function printHelp() {

@@ -2,6 +2,27 @@
 
 Per-section behavior rules for a CS/IS Master's thesis. Each section has distinct goals, structure patterns, tone, and common AI tells to watch for.
 
+**Critical principle (Professor's rule):** Strictly separate concerns between sections. Results present findings objectively — do not mix in interpretation. Discussion interprets — do not introduce new data. Related Work surveys literature — do not repeat the motivation from the Introduction.
+
+Also read `references/professor-style-guide.md` for the full blueprint structure and style rules from the supervisor.
+
+---
+
+## Abstract
+
+### Goal
+Give the full picture of the thesis in miniature. The abstract should cover every major section.
+
+### Structure Pattern
+Include 1-2 sentences for each of: problem/motivation, research questions, methodology, key results, contribution/conclusion.
+
+### Behavioral Rules
+- **Do:** Cover all sections — a reader should know the full story from the abstract alone
+- **Do:** Keep it self-contained — no citations, no references to sections/figures
+- **Do:** Write it first to establish the storyline, then revise it last to match the final thesis
+- **Avoid:** Vague promises ("we explore...") — state what was actually done and found
+- **Avoid:** Excessive detail — the abstract is a summary, not a condensed paper
+
 ---
 
 ## Introduction
@@ -66,18 +87,64 @@ Analytical and comparative. The author demonstrates command of the field.
 
 ---
 
+## Research Questions
+
+### Goal
+State the concrete research questions that are asked and answered in this thesis. Make them explicit and precise.
+
+### Structure Pattern
+- Brief transition from the gap identified in Related Work
+- Each research question stated clearly (RQ1, RQ2, etc.)
+- For each RQ, a brief rationale for why this question matters and how it connects to the gap
+
+### Behavioral Rules
+- **Do:** Number the research questions explicitly (RQ1, RQ2, ...)
+- **Do:** Make each question answerable — it should be clear what kind of evidence would answer it
+- **Do:** Connect each RQ to the methodology (how will you answer it?) and results (where is it answered?)
+- **Avoid:** Burying research questions inside the Introduction — the professor requires them as a distinct section
+- **Avoid:** Questions so broad they cannot be answered within the thesis scope
+- **Avoid:** Questions that overlap significantly — each should target a distinct aspect
+
+### Tone
+Direct and precise. The questions should be unambiguous.
+
+---
+
+## Artefact (Optional)
+
+### Goal
+If an artefact developed by the researcher plays a central role (e.g., an app, an algorithm, a prototype), dedicate a section to describing how it works and the design rationale.
+
+### Structure Pattern
+1. Purpose of the artefact — what problem does it address?
+2. Architecture / design overview
+3. Key implementation decisions and rationale
+4. How the artefact connects to the research questions
+
+### Behavioral Rules
+- **Do:** Include this section only if the artefact is central to the research
+- **Do:** Explain design rationale — why was it built this way?
+- **Do:** Use diagrams/figures to illustrate architecture
+- **Avoid:** Turning this into a user manual — focus on design decisions relevant to the research
+- **Avoid:** Including low-level implementation details unless they are methodologically relevant
+
+### Tone
+Technical and explanatory. The reader should understand what was built and why.
+
+---
+
 ## Methodology
 
 ### Goal
 Describe what was done in enough detail for replication. Justify methodological choices.
 
-### Structure Pattern
+### Structure Pattern (Professor's Required Subsections)
 1. Research design overview
-2. Data collection (sources, sampling, size, time period)
-3. System/model architecture (if applicable)
-4. Implementation details (tools, libraries, configurations)
-5. Evaluation metrics and procedure
-6. Ethical considerations / limitations of the method
+2. Study participants and recruitment (note if ethics approval was necessary)
+3. Materials — questionnaires, interview guidelines, artefacts that constitute an intervention, specific measurement devices
+4. Data collection
+5. Data analysis
+6. Implementation details (tools, libraries, configurations — if applicable)
 
 ### Behavioral Rules
 - **Do:** Use past tense — you already did this
