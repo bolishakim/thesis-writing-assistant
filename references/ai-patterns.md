@@ -1,6 +1,6 @@
 # AI Writing Anti-Pattern Taxonomy
 
-34 patterns organized into 4 categories. Each entry includes detection criteria, an AI-typical example, the academic fix, and severity (High/Medium/Low).
+37 patterns organized into 4 categories. Each entry includes detection criteria, an AI-typical example, the academic fix, and severity (High/Medium/Low).
 
 ---
 
@@ -8,7 +8,7 @@
 
 - [Content Patterns (CP-01 to CP-10)](#content-patterns)
 - [Language Patterns (LP-01 to LP-10)](#language-patterns)
-- [Style Patterns (SP-01 to SP-08)](#style-patterns)
+- [Style Patterns (SP-01 to SP-11)](#style-patterns)
 - [Communication Patterns (XP-01 to XP-06)](#communication-patterns)
 
 ---
@@ -190,6 +190,24 @@
 - **AI example:** [Ten consecutive paragraphs, each exactly 5 sentences]
 - **Fix:** Let paragraph length follow the thought. Some points need 3 sentences; complex arguments may need 8. Transitional paragraphs can be 2 sentences.
 - **Severity:** Low
+
+### SP-09: Uniform Sentence Complexity (Burstiness Failure)
+- **Detect:** Every sentence lands at the same cognitive complexity — all have one dependent clause and one main clause, or all are simple SVO. No mixing of dense analytical sentences with short factual ones
+- **AI example:** "The model processes input tokens sequentially. The attention mechanism computes similarity scores. The decoder generates output tokens. The system achieves competitive results."
+- **Fix:** Mix complexity: "The model processes input tokens sequentially. When the attention mechanism encounters tokens that share semantic similarity with multiple schema columns — a common scenario in enterprise databases with hundreds of tables — it must weight contextual cues from prior conversation turns against raw embedding distance. This ambiguity resolution step dominates inference time. Our column affinity graph eliminates it."
+- **Severity:** High
+
+### SP-10: Predictable Word Choices (Low Perplexity)
+- **Detect:** Every word is the most statistically likely continuation — no domain-specific terms, concrete numbers, or researcher-specific framing. Text reads as "generic academic prose" that could be about any topic
+- **AI example:** "The proposed approach demonstrates significant improvement over existing methods across multiple evaluation metrics, achieving state-of-the-art performance on the benchmark dataset."
+- **Fix:** "Our three-agent pipeline improved execution accuracy on Spider-DK from 71.2% to 83.4%, with the largest gains on queries requiring cross-table joins — the category where single-agent baselines consistently fail due to schema linking errors (cf. Li et al., 2024, Table 4)."
+- **Severity:** High
+
+### SP-11: Lexical-Only Humanization
+- **Detect:** Text has been superficially edited (synonym swaps, minor rephrasing) but retains AI-typical argument structure: claim → three supporting points → summary. The skeleton is AI-generated even if individual words have changed
+- **AI example:** [Text where "utilize" was changed to "use" and "facilitate" to "enable" but the five-paragraph-essay structure with identical paragraph lengths and formulaic transitions remains intact]
+- **Fix:** Restructure the argument itself: reorder paragraphs by logical priority, merge related points, vary paragraph purpose (some present evidence, some contrast views, some synthesize), and let section length reflect content importance rather than template
+- **Severity:** High
 
 ---
 

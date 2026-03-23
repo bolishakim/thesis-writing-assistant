@@ -158,6 +158,39 @@ Replace these with specific alternatives:
 
 ---
 
+## Statistical Naturalness (Anti-Detection)
+
+AI detectors like GPTZero measure two core statistical signals: **perplexity** (how predictable each word is) and **burstiness** (how much that predictability varies across sentences). AI text scores low on both — it is uniformly predictable. Human text is high on both — it mixes simple and complex, predictable and surprising.
+
+### Burstiness: Vary Sentence Complexity, Not Just Length
+
+Sentence length variance alone is insufficient. Vary the **cognitive complexity** across sentences:
+- Follow a dense, technical sentence with a short, direct factual one
+- Alternate between abstract reasoning and concrete examples
+- Mix rhetorical modes within a paragraph: assertion, evidence, qualification, comparison
+- Let some sentences be structurally simple (subject-verb-object) while others use subordinate clauses, parentheticals, or appositive phrases
+
+**Bad (uniform complexity):** Every sentence has one dependent clause, one main clause, and lands at medium complexity.
+**Good (bursty):** "Schema linking remains the primary bottleneck. When the parser encounters an ambiguous column name — 'date' appears in four tables in the TPC-H schema — it must resolve the reference using context from prior turns, table statistics, and any explicit user disambiguation. This costs time. Our approach sidesteps the combinatorial explosion by pre-computing a column affinity graph at schema load."
+
+### Token Predictability: Avoid the Expected Word
+
+AI detectors flag text where each word is the statistically most likely continuation. Counter this by:
+- Using **domain-specific terminology** over generic academic phrasing ("schema grounding" not "connecting to the database")
+- Including **concrete specifics** — numbers, system names, benchmark names, researcher names — that an LLM would not predict
+- Choosing **precise verbs** over generic ones ("the parser resolves" not "the system handles")
+- Occasionally using a less common but accurate synonym when it fits naturally (not forced synonym cycling)
+
+### Structural Rewriting, Not Lexical Substitution
+
+Simple synonym swaps and paraphrasing are detectable by GPTZero's Paraphraser Shield. Effective humanization requires **structural** changes:
+- Reorganize the argument flow, not just the words
+- Merge or split sentences based on logical grouping
+- Change the rhetorical approach (e.g., evidence-first instead of claim-first)
+- Introduce researcher-specific framing and perspective
+
+---
+
 ## Natural Imperfection Targets
 
 Real human academic writing is not uniformly polished. To produce authentic output:

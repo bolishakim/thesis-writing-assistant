@@ -4,14 +4,15 @@ academic_scorer.py — Scores thesis text 0-100 on academic authenticity
 by detecting AI writing patterns specific to academic CS/IS writing.
 
 Dimensions (100 points total):
-  1. AI Vocabulary       /20  — flags AI-typical words from the 34-pattern taxonomy
+  1. AI Vocabulary       /20  — flags AI-typical words from the 37-pattern taxonomy
   2. Hedging & Filler    /20  — detects compulsive hedging and filler phrases
-  3. Sentence Variance   /15  — measures rhythm variety (std dev of sentence lengths)
-  4. Passive Voice       /10  — flags excessive passive construction
-  5. Paragraph Structure /10  — checks for formulaic uniformity
-  6. Transition Patterns /10  — detects predictable sequential transitions
-  7. Tense Consistency   /10  — checks dominant tense matches declared section type
-  8. LaTeX Integrity      /5  — verifies LaTeX commands are well-formed
+  3. Sentence Variance   /10  — measures rhythm variety (std dev of sentence lengths)
+  4. Burstiness          /10  — measures complexity variance across sentences (GPTZero's key signal)
+  5. Passive Voice       /10  — flags excessive passive construction
+  6. Paragraph Structure /10  — checks for formulaic uniformity
+  7. Transition Patterns /10  — detects predictable sequential transitions
+  8. Tense Consistency    /5  — checks dominant tense matches declared section type
+  9. LaTeX Integrity      /5  — verifies LaTeX commands are well-formed
 
 Usage:
   python academic_scorer.py <file.tex>              # score a file
@@ -341,11 +342,11 @@ def score_hedging_and_filler(text: str) -> dict:
 
 
 def score_sentence_variance(text: str) -> dict:
-    """Score 0-15: high variance in sentence length = more natural."""
+    """Score 0-10: high variance in sentence length = more natural."""
     sentences = get_sentences(text)
 
     if len(sentences) < 4:
-        return {"score": 8, "max": 15, "note": "too few sentences to score reliably"}
+        return {"score": 5, "max": 10, "note": "too few sentences to score reliably"}
 
     lengths = [len(s.split()) for s in sentences]
     avg = sum(lengths) / len(lengths)
@@ -357,23 +358,23 @@ def score_sentence_variance(text: str) -> dict:
     has_long = any(l >= 28 for l in lengths)
 
     if std_dev >= 10:
-        score = 15
+        score = 10
     elif std_dev >= 7:
-        score = 12
-    elif std_dev >= 5:
         score = 8
+    elif std_dev >= 5:
+        score = 5
     elif std_dev >= 3:
-        score = 4
+        score = 3
     else:
         score = 0
 
     # Bonus for range variety
-    if has_short and has_long and score < 15:
-        score = min(15, score + 2)
+    if has_short and has_long and score < 10:
+        score = min(10, score + 2)
 
     return {
         "score": score,
-        "max": 15,
+        "max": 10,
         "std_dev": round(std_dev, 1),
         "avg_length": round(avg, 1),
         "min_length": min(lengths),
@@ -518,8 +519,89 @@ def score_transitions(text: str) -> dict:
     }
 
 
+def score_burstiness(text: str) -> dict:
+    """Score 0-10: measures complexity variance across sentences.
+
+    GPTZero's key signal: AI text has uniform complexity (low burstiness),
+    human text mixes simple and complex sentences (high burstiness).
+
+    Measures vocabulary sophistication variance per sentence using
+    average word length as a proxy for lexical complexity.
+    """
+    sentences = get_sentences(text)
+
+    if len(sentences) < 4:
+        return {"score": 5, "max": 10, "note": "too few sentences to score reliably"}
+
+    # Compute per-sentence complexity as average word length (proxy for vocabulary sophistication)
+    complexities = []
+    for sent in sentences:
+        words = [w for w in re.findall(r'[a-zA-Z]+', sent) if len(w) > 1]
+        if words:
+            avg_word_len = sum(len(w) for w in words) / len(words)
+            complexities.append(avg_word_len)
+
+    if len(complexities) < 4:
+        return {"score": 5, "max": 10, "note": "too few analyzable sentences"}
+
+    avg_complexity = sum(complexities) / len(complexities)
+    complexity_variance = sum((c - avg_complexity) ** 2 for c in complexities) / len(complexities)
+    complexity_std = math.sqrt(complexity_variance)
+
+    # Also check for complexity range — do we have both simple and dense sentences?
+    has_simple = any(c <= 4.0 for c in complexities)  # short, common words
+    has_dense = any(c >= 6.0 for c in complexities)    # longer, technical words
+
+    # Check for consecutive sentences with near-identical complexity (AI hallmark)
+    uniform_runs = 0
+    max_run = 1
+    current_run = 1
+    for i in range(1, len(complexities)):
+        if abs(complexities[i] - complexities[i - 1]) < 0.3:
+            current_run += 1
+            max_run = max(max_run, current_run)
+        else:
+            if current_run >= 3:
+                uniform_runs += 1
+            current_run = 1
+    if current_run >= 3:
+        uniform_runs += 1
+
+    # Score based on complexity variance
+    if complexity_std >= 1.2:
+        score = 10
+    elif complexity_std >= 0.9:
+        score = 8
+    elif complexity_std >= 0.6:
+        score = 5
+    elif complexity_std >= 0.4:
+        score = 3
+    else:
+        score = 0
+
+    # Bonus for having both simple and dense sentences
+    if has_simple and has_dense and score < 10:
+        score = min(10, score + 2)
+
+    # Penalty for long uniform runs
+    if uniform_runs > 0:
+        score = max(0, score - 2 * uniform_runs)
+
+    return {
+        "score": score,
+        "max": 10,
+        "complexity_std": round(complexity_std, 2),
+        "avg_complexity": round(avg_complexity, 2),
+        "has_simple_sentences": has_simple,
+        "has_dense_sentences": has_dense,
+        "uniform_runs": uniform_runs,
+        "longest_uniform_run": max_run,
+        "sentence_count": len(complexities),
+    }
+
+
 def score_tense_consistency(text: str, section: str = None) -> dict:
-    """Score 0-10: checks if dominant tense matches the expected section tense."""
+    """Score 0-5: checks if dominant tense matches the expected section tense."""
     if section is None:
         # Try to auto-detect from \section{} commands
         section_match = re.search(r'\\section\{([^}]+)\}', text, re.IGNORECASE)
@@ -527,7 +609,7 @@ def score_tense_consistency(text: str, section: str = None) -> dict:
             section = section_match.group(1).strip().lower()
 
     if section is None:
-        return {"score": 5, "max": 10, "note": "section type unknown — specify with --section"}
+        return {"score": 3, "max": 5, "note": "section type unknown — specify with --section"}
 
     # Find expected tense
     expected = None
@@ -537,7 +619,7 @@ def score_tense_consistency(text: str, section: str = None) -> dict:
             break
 
     if expected is None:
-        return {"score": 5, "max": 10, "note": f"section '{section}' not in tense map"}
+        return {"score": 3, "max": 5, "note": f"section '{section}' not in tense map"}
 
     clean = strip_latex_commands(text)
 
@@ -565,15 +647,15 @@ def score_tense_consistency(text: str, section: str = None) -> dict:
         ratio = min(past_ratio, present_ratio) * 2  # reward balance
 
     if dominant_correct and ratio >= 0.5:
-        score = 10
+        score = 5
     elif dominant_correct:
-        score = 7
-    else:
         score = 3
+    else:
+        score = 1
 
     return {
         "score": score,
-        "max": 10,
+        "max": 5,
         "section": section,
         "expected_tense": expected,
         "past_ratio": round(past_ratio, 2),
@@ -646,6 +728,7 @@ def score_academic_authenticity(text: str, section: str = None) -> dict:
     vocab = score_ai_vocabulary(text)
     hedging = score_hedging_and_filler(text)
     variance = score_sentence_variance(text)
+    burstiness = score_burstiness(text)
     passive = score_passive_voice(text)
     paragraphs = score_paragraph_structure(text)
     transitions = score_transitions(text)
@@ -654,8 +737,8 @@ def score_academic_authenticity(text: str, section: str = None) -> dict:
 
     total = (
         vocab["score"] + hedging["score"] + variance["score"] +
-        passive["score"] + paragraphs["score"] + transitions["score"] +
-        tense["score"] + latex["score"]
+        burstiness["score"] + passive["score"] + paragraphs["score"] +
+        transitions["score"] + tense["score"] + latex["score"]
     )
 
     if total >= 85:
@@ -676,6 +759,7 @@ def score_academic_authenticity(text: str, section: str = None) -> dict:
             "ai_vocabulary": vocab,
             "hedging_and_filler": hedging,
             "sentence_variance": variance,
+            "burstiness": burstiness,
             "passive_voice": passive,
             "paragraph_structure": paragraphs,
             "transition_patterns": transitions,
@@ -712,11 +796,12 @@ def print_report(result: dict, label: str = "") -> None:
     dimensions = [
         ("AI Vocabulary",       s["ai_vocabulary"],       20),
         ("Hedging & Filler",    s["hedging_and_filler"],   20),
-        ("Sentence Variance",   s["sentence_variance"],    15),
+        ("Sentence Variance",   s["sentence_variance"],    10),
+        ("Burstiness",          s["burstiness"],           10),
         ("Passive Voice",       s["passive_voice"],        10),
         ("Paragraph Structure", s["paragraph_structure"],  10),
         ("Transition Patterns", s["transition_patterns"],  10),
-        ("Tense Consistency",   s["tense_consistency"],    10),
+        ("Tense Consistency",   s["tense_consistency"],     5),
         ("LaTeX Integrity",     s["latex_integrity"],       5),
     ]
 
@@ -759,6 +844,19 @@ def print_report(result: dict, label: str = "") -> None:
             print(f"  !  Sentence variance low — {sv['std_dev']} (target: 7+)")
         else:
             print(f"  OK  Sentence variance: {sv['std_dev']} (range: {sv['min_length']}-{sv['max_length']} words)")
+
+    # Burstiness
+    bu = s["burstiness"]
+    if "note" not in bu:
+        if bu["complexity_std"] < 0.4:
+            print(f"  !! Burstiness critically low — complexity std {bu['complexity_std']} (target: 0.9+)")
+            print(f"     GPTZero signal: uniform sentence complexity across text")
+        elif bu["complexity_std"] < 0.6:
+            print(f"  !  Burstiness low — complexity std {bu['complexity_std']} (target: 0.9+)")
+        else:
+            print(f"  OK  Burstiness: {bu['complexity_std']} (simple={bu['has_simple_sentences']}, dense={bu['has_dense_sentences']})")
+        if bu["uniform_runs"] > 0:
+            print(f"  !  {bu['uniform_runs']} run(s) of {bu['longest_uniform_run']}+ sentences with near-identical complexity")
 
     # Passive voice
     pv = s["passive_voice"]
@@ -811,6 +909,8 @@ def print_report(result: dict, label: str = "") -> None:
         fixes.append("Cut hedging and filler phrases — state claims directly")
     if "note" not in sv and sv["std_dev"] < 7:
         fixes.append("Vary sentence length — mix short (8-12 word) and longer (25-35 word) sentences")
+    if "note" not in bu and bu["complexity_std"] < 0.6:
+        fixes.append("Increase burstiness — alternate simple factual sentences with complex analytical ones (GPTZero's key signal)")
     if pv["ratio"] > 0.3:
         fixes.append("Convert passive sentences to active voice")
     if tr["transition_count"] > 5:

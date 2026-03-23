@@ -44,8 +44,8 @@ Re-scan the rewritten text against all 34 patterns from `ai-patterns.md`. Score 
 6. No generic claims without specifics (CP-03)
 7. No inflated significance language (CP-05)
 8. No meta-commentary about the text itself (XP-01)
-9. No performative objectivity phrases (XP-03)
-10. No consensus manufacturing (XP-06)
+9. No uniform sentence complexity / low burstiness (SP-09)
+10. No predictable word choices / low perplexity (SP-10)
 
 Score = number of failures. If score > 3, trigger Pass 2.
 
@@ -85,21 +85,21 @@ Verify that the rewrite preserved all technical content from the original.
 
 Score = number of passes.
 
-### Dimension 4: Structural Naturalness (0-10, higher is better)
+### Dimension 4: Structural Naturalness & Burstiness (0-10, higher is better)
 
-Evaluate whether the text has the varied, organic structure of human writing.
+Evaluate whether the text has the varied, organic structure of human writing. Pay special attention to **burstiness** — the variance of complexity across sentences, which is GPTZero's primary detection signal.
 
 **Checklist (check each, count passes):**
 1. Sentence lengths vary (standard deviation > 5 words)
-2. Paragraph lengths vary (not all the same sentence count)
-3. No more than 2 consecutive paragraphs start the same way
-4. At least one sentence under 12 words exists per 500 words
-5. At least one sentence over 25 words exists per 500 words
+2. Sentence **complexity** varies — simple factual sentences alternate with dense analytical ones (burstiness)
+3. No run of 3+ consecutive sentences at the same complexity level
+4. Paragraph lengths vary (not all the same sentence count)
+5. At least one sentence under 12 words and one over 25 words per 500 words
 6. Paragraph openings are varied (not all topic sentences)
 7. Transitions feel organic, not mechanical
-8. Lists are used sparingly and only where appropriate
+8. Domain-specific terms and concrete specifics reduce token predictability
 9. No symmetric subsection structures (identical lengths)
-10. At least one slightly imperfect transition exists (natural texture)
+10. Text has been structurally rewritten, not just lexically substituted (argument flow differs from AI-typical claim→support→summary)
 
 Score = number of passes.
 
